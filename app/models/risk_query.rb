@@ -64,6 +64,115 @@ class RiskQuery < Query
     [['magnitude', 'desc'], ['id', 'asc']]
   end
 
+  def project_statement
+    project_clauses = []
+    active_subprojects_ids = []
+
+    # give all projects with subtasks link by the project's subprojects
+    sql = "with subprojects as (select id, lft, rgt from projects where id = #{project.id}),
+    project_issues as (select distinct sp.id as subproject_id, s.project_id, s.id, s.root_id, s.lft, s.rgt
+     from subprojects sp 
+       join projects p on p.rgt <= sp.rgt and p.lft >= sp.lft 
+       left join issues s on s.project_id = p.id and s.closed_on is null)
+    select distinct pi.subproject_id, project_id from project_issues pi
+    union distinct select distinct p.subproject_id, sub.project_id
+     from project_issues p 
+	  join issues sub on sub.root_id = p.id and sub.lft >= p.lft and sub.rgt <= p.rgt and sub.closed_on is null"
+
+    link_projects = ActiveRecord::Base.connection.execute(sql).to_a
+
+    active_subprojects_ids = project.descendants.active.map(&:id) if project
+    if active_subprojects_ids.any?
+      if has_filter?("subproject_id")
+        case operator_for("subproject_id")
+        when '='
+          # include the selected subprojects
+          ids = [project.id] + values_for("subproject_id").map(&:to_i)
+          ids.each do |id|
+            link_projects.each do |p|
+              if p['subproject_id'] == id
+                unless ids.include? p['project_id']
+                  ids.push p['project_id'].to_i
+                end
+              end              
+            end
+          end
+          project_clauses << "#{Project.table_name}.id IN (%s)" % ids.uniq.join(',')
+        when '!'
+          # exclude the selected subprojects
+          ids = [project.id] + active_subprojects_ids - values_for("subproject_id").map(&:to_i)
+          ids.each do |id|
+            link_projects.each do |p|
+              if p['subproject_id'] == id
+                unless ids.include? p['project_id']
+                  ids.push p['project_id'].to_i
+                end
+              end              
+            end
+          end
+          project_clauses << "#{Project.table_name}.id IN (%s)" % ids.uniq.join(',')
+        when '!*'
+          # main project only
+          if link_projects.empty? || link_projects.length == 1
+            project_clauses << "#{Project.table_name}.id = %d" % project.id
+          else
+            ids = []
+            link_projects.each do |p|
+              if p['subproject_id'] == project.id
+                unless ids.include? p['project_id']
+                  ids.push p['project_id'].to_i
+                end
+              end              
+            end
+            project_clauses << "#{Project.table_name}.id IN (%s)" % ids.uniq.join(',')
+          end
+        else
+          # all subprojects
+          if link_projects.empty?
+            project_clauses << "#{Project.table_name}.lft >= #{project.lft} AND #{Project.table_name}.rgt <= #{project.rgt}"
+          else
+            ids = [project.id] + active_subprojects_ids 
+            link_projects.each do |p|
+              ids.push p['project_id'].to_i
+            end            
+            project_clauses << "#{Project.table_name}.id IN (%s)" % ids.uniq.join(',')
+          end
+        end
+      elsif Setting.display_subprojects_issues?
+        if link_projects.empty?
+          project_clauses << "#{Project.table_name}.lft >= #{project.lft} AND #{Project.table_name}.rgt <= #{project.rgt}"
+        else
+          ids = [project.id] + active_subprojects_ids 
+          link_projects.each do |p|
+            ids.push p['project_id'].to_i
+          end            
+          project_clauses << "#{Project.table_name}.id IN (%s)" % ids.uniq.join(',')
+        end
+      else
+        if link_projects.empty?
+          project_clauses << "#{Project.table_name}.id = %d" % project.id
+        else
+          ids = []
+          link_projects.each do |p|
+            ids.push p['project_id'].to_i
+          end
+          project_clauses << "#{Project.table_name}.id IN (%s)" % ids.uniq.join(',')
+        end
+      end
+    elsif project      
+      if link_projects.empty?
+        project_clauses << "#{Project.table_name}.id = %d" % project.id
+      else
+        ids = []
+        link_projects.each do |p|
+          ids.push p['project_id'].to_i
+        end
+        project_clauses << "#{Project.table_name}.id IN (%s)" % ids.uniq.join(',')
+      end
+    end
+    project_clauses.any? ? project_clauses.join(' AND ') : nil
+  end
+
   def base_scope
     Risk.joins(:project).where(statement)
   end
