@@ -27,6 +27,11 @@ Redmine::Plugin.register :redmine_risks do
 
   # Pulls are added to the activity view
   activity_provider :risks, :class_name => ['Risk', 'Journal']
+  begin
+    requires_redmine_plugin :additionals, version_or_higher: '3.0.1'
+  rescue Redmine::PluginNotFound
+    raise 'Please install additionals plugin (https://github.com/alphanodes/additionals)'
+  end
 end
 
 require 'redmine_risks'
