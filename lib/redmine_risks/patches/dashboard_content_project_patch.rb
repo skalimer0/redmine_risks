@@ -12,7 +12,7 @@ module RedmineRisks
             blocks = super
   
             blocks['risks'] = { label: l(:label_risk_plural),
-                                  permission: :manage_repository,
+                                  permission: :view_risks,
                                   no_settings: true,
                                   partial: 'dashboards/blocks/risks' }
   
