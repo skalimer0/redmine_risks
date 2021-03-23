@@ -1,0 +1,122 @@
+- cache render_async_cache_key(_dashboard_async_blocks_path(@project, dashboard.async_params(block, async, settings))),
+                               expires_in: DashboardContent::RENDER_ASYNC_CACHE_EXPIRES_IN,
+                               skip_digest: true do
+  - labels = dashboard_analyse_labels settings[:max_days]
+  - titles = dashboard_analyse_titles settings
+  - datas = dashboard_analyse_datas settings, @project
+  
+  h3.icon.icon-document
+    = l :matrix_risks
+
+  canvas id="#{block}-canvas" class="matrix"
+  script src="/plugin_assets/additionals/javascripts/Chart.bundle.min.js"
+  script src="/plugin_assets/redmine_risks/javascripts/chartjs-chart-matrix.min.js"
+
+  javascript:
+    var ctx = document.getElementById('#{block}-canvas').getContext('2d');
+    
+    config = {
+      datasets: [],
+    };
+    options = {
+      legend: {
+        display: false
+      },
+      tooltips: {
+        callbacks: {
+          title: function() { return 'Risques';},
+          label: function(item, data) {
+            var v = data.datasets[item.datasetIndex].data[item.index];
+            return ["Impact: " + v.x, "Probabilité: " + v.y, "Nombre de risques: " + v.v];
+          }
+        }
+      },
+      scales: {
+        xAxes: [{
+          type: 'category',
+          labels: ['', 'Négligeable','Mineur','Modéré','Important','Sévère',''],
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          ticks: {
+            display: true
+          }
+        }],
+        yAxes: [{
+          type: 'category',
+          labels: ['','Attendue', 'Haute', 'Moyenne', 'Basse','Peu probable',''],
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          ticks: {
+            display: true
+          }
+        }]
+      }
+    };
+
+    config.datasets.push({
+      label: 'Matrice Des Risques',
+      data: [
+        { x: 'Négligeable', y: 'Peu probable', v: 1 },
+        { x: 'Négligeable', y: 'Basse', v: 1 },
+        { x: 'Négligeable', y: 'Moyenne', v: 1 },
+        { x: 'Négligeable', y: 'Haute', v: 1},
+        { x: 'Négligeable', y: 'Attendue', v: 1 },
+        { x: 'Mineur', y: 'Peu probable', v: 1 },
+        { x: 'Mineur', y: 'Basse', v: 1 },
+        { x: 'Mineur', y: 'Moyenne', v: 1},
+        { x: 'Mineur', y: 'Haute', v: 1 },
+        { x: 'Mineur', y: 'Attendue', v: 1 },
+        { x: 'Modéré', y: 'Peu probable', v: 1 },
+        { x: 'Modéré', y: 'Basse', v: 1 },
+        { x: 'Modéré', y: 'Moyenne', v: 1 },
+        { x: 'Modéré', y: 'Haute', v: 1 },
+        { x: 'Modéré', y: 'Attendue', v: 1 },
+        { x: 'Important', y: 'Peu probable', v: 1 },
+        { x: 'Important', y: 'Basse', v: 1 },
+        { x: 'Important', y: 'Moyenne', v: 1 },
+        { x: 'Important', y: 'Haute', v: 1 },
+        { x: 'Important', y: 'Attendue', v: 1 },
+        { x: 'Sévère', y: 'Peu probable', v: 1 },
+        { x: 'Sévère', y: 'Basse', v: 1 },
+        { x: 'Sévère', y: 'Moyenne', v: 1 },
+        { x: 'Sévère', y: 'Haute', v: 1},
+        { x: 'Sévère', y: 'Attendue', v: 1 }
+      ],
+      borderWidth: 1,
+      backgroundColor: function(ctx) {
+        if (ctx.dataIndex % 5 == 0 || ctx.dataIndex <= 2 || ctx.dataIndex == 6) {
+          return Color('green').rgbString();
+        }
+        else {
+          if (ctx.dataIndex % 5 == 1 || ctx.dataIndex <= 8 || ctx.dataIndex == 12) {
+            return Color('yellow').rgbString();	
+          } 
+          else {
+            if (ctx.dataIndex % 5 == 2 || ctx.dataIndex <= 13 || ctx.dataIndex == 18) {
+              return Color('orange').rgbString();	
+            } 
+            else {
+              return Color('red').rgbString();										
+            }
+          }
+        }
+      },
+      width: function(ctx) {
+        var a = ctx.chart.chartArea;
+        return (a.right - a.left) / 6;
+      },
+      height: function(ctx) {
+        var a = ctx.chart.chartArea;
+        return (a.bottom - a.top) / 6;
+      }
+    })
+
+    var matrixChart = new Chart(ctx, {
+      type: 'matrix',
+      data: config,
+      options: options
+    });

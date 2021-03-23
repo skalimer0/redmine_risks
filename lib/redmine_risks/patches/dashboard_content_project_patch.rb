@@ -14,7 +14,7 @@ module RedmineRisks
             blocks['risks'] = { label: l(:label_risk_plural),
                                   permission: :view_risks,
                                   no_settings: true,
-                                  partial: 'dashboards/blocks/risks' }
+                                  partial: 'dashboards/blocks/project_risks' }
   
             blocks
           end
