@@ -31,11 +31,11 @@ module RisksHelper
     l("label_risk_status_#{status}")
   end
 
-  def format_risk_probability(probability)
+  def self.format_risk_probability(probability)
     format_risk_level(Risk::RISK_PROBABILITY, probability) {|p| l("label_risk_probability_#{p}")}
   end
 
-  def format_risk_impact(impact)
+  def self.format_risk_impact(impact)
     format_risk_level(Risk::RISK_IMPACT, impact) {|i| l("label_risk_impact_#{i}")}
   end
 
@@ -56,7 +56,7 @@ module RisksHelper
     yield levels[level / increment]
   end
 
-  def format_risk_levels(levels, value = nil, &block)
+  def self.format_risk_levels(levels, value = nil, &block)
     index     = 0
     increment = 100 / (levels.count - 1)
 
@@ -122,6 +122,18 @@ module RisksHelper
     attributes
       .map {|column, value| [column, value.present? ? value : nil] }
       .to_h
+  end
+
+  def format_risk_levels(levels, value = nil, &block)
+    RisksHelper.format_risk_levels(levels, value = nil, &block)
+  end
+
+  def format_risk_probability(probability)
+    RisksHelper.format_risk_probability(probability)
+  end
+
+  def format_risk_impact(impact)
+    RisksHelper.format_risk_impact(impact)
   end
 
   def self.probabilities
