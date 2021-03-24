@@ -44,7 +44,7 @@ module RisksHelper
     l("label_risk_strategy_#{strategy}")
   end
 
-  def format_risk_level(levels, level, &block)
+  def self.format_risk_level(levels, level, &block)
     return if level.nil?
 
     increment = 100 / (levels.count - 1)
@@ -134,6 +134,10 @@ module RisksHelper
 
   def format_risk_impact(impact)
     RisksHelper.format_risk_impact(impact)
+  end
+
+  def format_risk_level(levels, level, &block)
+    RisksHelper.format_risk_level(levels, level, &block)
   end
 
   def self.probabilities
