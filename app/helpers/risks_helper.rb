@@ -192,7 +192,7 @@ module RisksHelper
     datas = "["
     (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(i)}).each do |i|
       (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
-        datas << "{ x: '" + i[0] + "', y: '" + p[0] + "', v: " + allrisks[((i[1] / 25) << 3) + (p[1] / 25)].length + "},"
+        datas << "{ x: '" + i[0] + "', y: '" + p[0] + "', v: " + allrisks[((i[1] / 25) << 3) + (p[1] / 25)].length.to_s + "},"
       end
     end
     datas.sub(/.*\K,/, ']')
