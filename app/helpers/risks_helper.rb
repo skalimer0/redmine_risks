@@ -161,7 +161,7 @@ module RisksHelper
     allrisks = []
     (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(i)}).each do |i|
       (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
-        allrisks(i[0] + ":" + p[0]) = []
+        allrisks[i[0] + ":" + p[0]] = []
       end
     end
 
