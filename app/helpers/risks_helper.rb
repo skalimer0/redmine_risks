@@ -158,7 +158,7 @@ module RisksHelper
   end
 
   def self.datas(content_project)    
-    @risks = Risk.where(:id => (content_project.id)).to_a
+    @risks = Risk.where(:id => (content_project.id.to_i)).to_a
     allrisks = []
     (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(p)}).each do |i|
       (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
