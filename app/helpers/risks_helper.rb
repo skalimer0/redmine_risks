@@ -159,7 +159,7 @@ module RisksHelper
 
   def self.datas(content_project)    
     allrisks = []
-    (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(p)}).each do |i|
+    (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(i)}).each do |i|
       (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
         Rails.logger.info(i[0])
         Rails.logger.info(p[0])
@@ -168,7 +168,7 @@ module RisksHelper
     Rails.logger.info(allrisks)
     
     query = RiskQuery.new(:name => l(:label_watched_issues), :user => User.current)
-    query.add_filter 'project_id', '=', ["#{Project::STATUS_ACTIVE}"]
+    query.add_filter 'project_id', '=', [content_project.id.to_s]
     query.add_filter 'status' , "=", ["open"]
     prisks = query.risks()
     
