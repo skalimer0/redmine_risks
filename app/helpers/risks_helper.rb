@@ -188,33 +188,13 @@ module RisksHelper
     project_risks.each do |r|
       allrisks[((r['impact'] / 25) << 3) + (r['probability'] / 25)].push r['id']
     end
-    
-    "[
-      { x: 'Négligeable', y: 'Peu probable', v: 1 },
-      { x: 'Négligeable', y: 'Basse', v: 1 },
-      { x: 'Négligeable', y: 'Moyenne', v: 1 },
-      { x: 'Négligeable', y: 'Haute', v: 1},
-      { x: 'Négligeable', y: 'Attendue', v: 1 },
-      { x: 'Mineur', y: 'Peu probable', v: 1 },
-      { x: 'Mineur', y: 'Basse', v: 1 },
-      { x: 'Mineur', y: 'Moyenne', v: 1},
-      { x: 'Mineur', y: 'Haute', v: 1 },
-      { x: 'Mineur', y: 'Attendue', v: 1 },
-      { x: 'Modéré', y: 'Peu probable', v: 1 },
-      { x: 'Modéré', y: 'Basse', v: 1 },
-      { x: 'Modéré', y: 'Moyenne', v: 1 },
-      { x: 'Modéré', y: 'Haute', v: 1 },
-      { x: 'Modéré', y: 'Attendue', v: 1 },
-      { x: 'Important', y: 'Peu probable', v: 1 },
-      { x: 'Important', y: 'Basse', v: 1 },
-      { x: 'Important', y: 'Moyenne', v: 1 },
-      { x: 'Important', y: 'Haute', v: 1 },
-      { x: 'Important', y: 'Attendue', v: 1 },
-      { x: 'Sévère', y: 'Peu probable', v: 1 },
-      { x: 'Sévère', y: 'Basse', v: 1 },
-      { x: 'Sévère', y: 'Moyenne', v: 1 },
-      { x: 'Sévère', y: 'Haute', v: 1},
-      { x: 'Sévère', y: 'Attendue', v: 1 }
-    ]"    
+
+    datas = "["
+    (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(i)}).each do |i|
+      (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
+        datas << "{ x: '" + i[0] + "', y: '" + p[0] + "', v: " + allrisks[((i[1] / 25) << 3) + (p[1] / 25)].length + "},"
+      end
+    end
+    datas.sub(/.*\K,/, ']')
   end
 end
