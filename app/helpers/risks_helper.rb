@@ -186,7 +186,9 @@ module RisksHelper
     sql << "and project_id IN (%s)" % ids.uniq.join(',')
     project_risks = ActiveRecord::Base.connection.execute(sql).to_a
     project_risks.each do |r|
-      allrisks[((r['impact'] / 25) << 3) + (r['probability'] / 25)].push r['id']
+      unless r['impact'].nil? || r['probability'].nil? 
+        allrisks[((r['impact'] / 25) << 3) + (r['probability'] / 25)].push r['id']
+      end
     end
 
     datas = "["
