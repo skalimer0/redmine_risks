@@ -39,10 +39,10 @@
     },
       tooltips: {
         callbacks: {
-          title: function() { return #{{"\"" + (l :label_risks) + "\""}};},
+          title: function() { return #{{"'" + (l :label_risks) + "'"}};},
           label: function(item, data) {
             var v = data.datasets[item.datasetIndex].data[item.index];
-            return [#{{"\"" + (l :field_impact) + ": \""}} + v.x, #{{"\"" + (l :field_probability) + ": \""}} + v.y, #{{"\"" + (l :number_of_risks) + ": \""}} + v.v];
+            return [#{{"'" + (l :field_impact) + ": '"}} + v.x, #{{"'" + (l :field_probability) + ": '"}} + v.y, #{{"'" + (l :number_of_risks) + ": '"}} + v.v];
           }
         }
       },
@@ -74,7 +74,33 @@
 
     config.datasets.push({
       label: #{l :risks_matrix},
-      data: #{raw RisksHelper.datas},
+      data: [
+        { x: 'Négligeable', y: 'Peu probable', v: 1 },
+        { x: 'Négligeable', y: 'Basse', v: 1 },
+        { x: 'Négligeable', y: 'Moyenne', v: 1 },
+        { x: 'Négligeable', y: 'Haute', v: 1},
+        { x: 'Négligeable', y: 'Attendue', v: 1 },
+        { x: 'Mineur', y: 'Peu probable', v: 1 },
+        { x: 'Mineur', y: 'Basse', v: 1 },
+        { x: 'Mineur', y: 'Moyenne', v: 1},
+        { x: 'Mineur', y: 'Haute', v: 1 },
+        { x: 'Mineur', y: 'Attendue', v: 1 },
+        { x: 'Modéré', y: 'Peu probable', v: 1 },
+        { x: 'Modéré', y: 'Basse', v: 1 },
+        { x: 'Modéré', y: 'Moyenne', v: 1 },
+        { x: 'Modéré', y: 'Haute', v: 1 },
+        { x: 'Modéré', y: 'Attendue', v: 1 },
+        { x: 'Important', y: 'Peu probable', v: 1 },
+        { x: 'Important', y: 'Basse', v: 1 },
+        { x: 'Important', y: 'Moyenne', v: 1 },
+        { x: 'Important', y: 'Haute', v: 1 },
+        { x: 'Important', y: 'Attendue', v: 1 },
+        { x: 'Sévère', y: 'Peu probable', v: 1 },
+        { x: 'Sévère', y: 'Basse', v: 1 },
+        { x: 'Sévère', y: 'Moyenne', v: 1 },
+        { x: 'Sévère', y: 'Haute', v: 1},
+        { x: 'Sévère', y: 'Attendue', v: 1 }
+      ],
       backgroundColor: function(ctx) {
         if (ctx.dataIndex % 5 == 0 || ctx.dataIndex <= 2 || ctx.dataIndex == 6) {
           return Color('green').rgbString();
