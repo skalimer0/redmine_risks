@@ -1,6 +1,7 @@
 module RisksHelper
   include IssuesHelper
   include QueriesHelper
+  include Redmine::I18n 
 
   def find_risk
     risk_id = params[:risk_id] || params[:id]
