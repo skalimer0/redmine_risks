@@ -39,10 +39,10 @@
     },
       tooltips: {
         callbacks: {
-          title: function() { return 'Risques';},
+          title: function() { return #{l :label_risks};},
           label: function(item, data) {
             var v = data.datasets[item.datasetIndex].data[item.index];
-            return ["Impact: " + v.x, "Probabilité: " + v.y, "Nombre de risques: " + v.v];
+            return [#{l :field_impact} + ": " + v.x, #{l :field_probability} + ": " + v.y, #{l :number_of_risks} + ": " + v.v];
           }
         }
       },
@@ -73,7 +73,7 @@
     };
 
     config.datasets.push({
-      label: 'Matrice Des Risques',
+      label: #{l :risks_matrix},
       data: [
         { x: 'Négligeable', y: 'Peu probable', v: 1 },
         { x: 'Négligeable', y: 'Basse', v: 1 },

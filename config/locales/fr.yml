@@ -42,3 +42,4 @@ fr:
   notice_risk_successful_delete: "Risque supprimé avec succès."
   text_risks_destroy_confirmation: 'Etes vous sûr de vouloir supprimer le(s) risque(s) sélectionné(s)?'
   risks_matrix: 'Matrice des risques'
+  number_of_risks: 'Nombre de risques'
