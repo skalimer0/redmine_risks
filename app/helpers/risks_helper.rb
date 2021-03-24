@@ -123,4 +123,20 @@ module RisksHelper
       .map {|column, value| [column, value.present? ? value : nil] }
       .to_h
   end
+
+  def self.probabilities
+    probabilities = ['']
+    format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
+      probabilities.push(p)
+    end
+    probabilities.push('')
+  end
+
+  def self.impacts
+    impacts = ['']
+    format_risk_levels(Risk::RISK_IMPACT) {|p| format_risk_impact(p)}).each do |p|
+      impacts.push(p)
+    end
+    impacts.push('')
+  end
 end

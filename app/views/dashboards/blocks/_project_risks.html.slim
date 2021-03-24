@@ -1,9 +1,6 @@
 - cache render_async_cache_key(_dashboard_async_blocks_path(@project, dashboard.async_params(block, async, settings))),
                                expires_in: DashboardContent::RENDER_ASYNC_CACHE_EXPIRES_IN,
                                skip_digest: true do
-  - labels = dashboard_analyse_labels settings[:max_days]
-  - titles = dashboard_analyse_titles settings
-  - datas = dashboard_analyse_datas settings, @project
   
   h3
     i.fas.fa-th
@@ -52,7 +49,7 @@
       scales: {
         xAxes: [{
           type: 'category',
-          labels: ['', 'Négligeable','Mineur','Modéré','Important','Sévère',''],
+          labels: #{RisksHelper.impacts},
           gridLines: {
             display: false,
             drawBorder: false
@@ -63,7 +60,7 @@
         }],
         yAxes: [{
           type: 'category',
-          labels: ['','Attendue', 'Haute', 'Moyenne', 'Basse','Peu probable',''],
+          labels: #{RisksHelper.probabilities},
           gridLines: {
             display: false,
             drawBorder: false
