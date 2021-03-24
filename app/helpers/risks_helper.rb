@@ -164,12 +164,31 @@ module RisksHelper
         allrisks[((i[1] / 25) << 3) + (p[1] / 25)] = []
       end
     end
+    sql = "with subprojects as (select id, lft, rgt from projects where id = #{content_project.id}),
+    project_issues as (select distinct sp.id as subproject_id, s.project_id, s.id, s.root_id, s.lft, s.rgt
+     from subprojects sp 
+       join projects p on p.rgt <= sp.rgt and p.lft >= sp.lft 
+       left join issues s on s.project_id = p.id and s.closed_on is null)
+    select distinct pi.subproject_id, project_id from project_issues pi
+    union distinct select distinct p.subproject_id, sub.project_id
+     from project_issues p 
+	  join issues sub on sub.root_id = p.id and sub.lft >= p.lft and sub.rgt <= p.rgt and sub.closed_on is null"
 
-    prisks = RiskQuery.new.risks()    
-    prisks.each do |risk|
-      Rails.logger.info(risk)
+    link_projects = ActiveRecord::Base.connection.execute(sql).to_a
+    ids = []
+    link_projects.each do |p|
+      unless ids.include? p['project_id']
+        ids.push p['project_id'].to_i
+      end            
     end
 
+    sql = "select id, probability, impact from risks where status = 'open' "
+    sql << "and project_id IN (%s)" % ids.uniq.join(',')
+    project_risks = ActiveRecord::Base.connection.execute(sql).to_a
+    project_risks.each do |r|
+      allrisks[((r['impact'] / 25) << 3) + (r['probability'] / 25)].push r['id']
+    end
+    
     "[
       { x: 'Négligeable', y: 'Peu probable', v: 1 },
       { x: 'Négligeable', y: 'Basse', v: 1 },
