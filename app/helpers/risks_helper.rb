@@ -156,4 +156,34 @@ module RisksHelper
     end
     impacts.push('')
   end
+
+  def self.datas
+    "[
+      { x: 'Négligeable', y: 'Peu probable', v: 1 },
+      { x: 'Négligeable', y: 'Basse', v: 1 },
+      { x: 'Négligeable', y: 'Moyenne', v: 1 },
+      { x: 'Négligeable', y: 'Haute', v: 1},
+      { x: 'Négligeable', y: 'Attendue', v: 1 },
+      { x: 'Mineur', y: 'Peu probable', v: 1 },
+      { x: 'Mineur', y: 'Basse', v: 1 },
+      { x: 'Mineur', y: 'Moyenne', v: 1},
+      { x: 'Mineur', y: 'Haute', v: 1 },
+      { x: 'Mineur', y: 'Attendue', v: 1 },
+      { x: 'Modéré', y: 'Peu probable', v: 1 },
+      { x: 'Modéré', y: 'Basse', v: 1 },
+      { x: 'Modéré', y: 'Moyenne', v: 1 },
+      { x: 'Modéré', y: 'Haute', v: 1 },
+      { x: 'Modéré', y: 'Attendue', v: 1 },
+      { x: 'Important', y: 'Peu probable', v: 1 },
+      { x: 'Important', y: 'Basse', v: 1 },
+      { x: 'Important', y: 'Moyenne', v: 1 },
+      { x: 'Important', y: 'Haute', v: 1 },
+      { x: 'Important', y: 'Attendue', v: 1 },
+      { x: 'Sévère', y: 'Peu probable', v: 1 },
+      { x: 'Sévère', y: 'Basse', v: 1 },
+      { x: 'Sévère', y: 'Moyenne', v: 1 },
+      { x: 'Sévère', y: 'Haute', v: 1},
+      { x: 'Sévère', y: 'Attendue', v: 1 }
+    ]"    
+  end
 end
