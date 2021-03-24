@@ -39,7 +39,7 @@
     },
       tooltips: {
         callbacks: {
-          title: function() { return #{{"'" + l :label_risks + "'"}};},
+          title: function() { return #{{"'" + (l :label_risks) + "'"}};},
           label: function(item, data) {
             var v = data.datasets[item.datasetIndex].data[item.index];
             return [#{raw l :field_impact} + ": " + v.x, #{raw l :field_probability} + ": " + v.y, #{raw l :number_of_risks} + ": " + v.v];
