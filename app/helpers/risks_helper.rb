@@ -165,6 +165,11 @@ module RisksHelper
       end
     end
 
+    prisks = RiskQuery.new.risks()    
+    prisks.each do |risk|
+      Rails.logger.info(risk)
+    end
+
     "[
       { x: 'Négligeable', y: 'Peu probable', v: 1 },
       { x: 'Négligeable', y: 'Basse', v: 1 },
