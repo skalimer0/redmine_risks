@@ -144,7 +144,7 @@ module RisksHelper
   def self.probabilities
     probabilities = ['']
     (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
-      probabilities.push(p[0])
+      probabilities.insert(1, p[0])
     end
     probabilities.push('')
   end
