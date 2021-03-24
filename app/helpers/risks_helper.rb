@@ -151,8 +151,8 @@ module RisksHelper
 
   def self.impacts
     impacts = ['']
-    (format_risk_levels(Risk::RISK_IMPACT) {|p| format_risk_impact(p)}).each do |p|
-      impacts.push(p[0])
+    (format_risk_levels(Risk::RISK_IMPACT) {|p| format_risk_impact(p)}).each do |i|
+      impacts.push(i[0])
     end
     impacts.push('')
   end
@@ -161,16 +161,16 @@ module RisksHelper
     allrisks = []
     (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(p)}).each do |i|
       (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
-        allrisks[i[0].to_s + ':' + p[0].to_s] = []
+        Rails.logger.info(i[0])
+        Rails.logger.info(p[0])
       end
     end
     Rails.logger.info(allrisks)
     
     query = RiskQuery.new(:name => l(:label_watched_issues), :user => User.current)
-    query.add_filter 'project.id', '=', ["#{Project::STATUS_ACTIVE}"]
-    query.column_names = ['project', 'tracker', 'status', 'subject']
-    query.sort_criteria = [['updated_on', 'desc']]
-    prisks = query.issues()
+    query.add_filter 'project_id', '=', ["#{Project::STATUS_ACTIVE}"]
+    query.add_filter 'status' , "=", ["open"]
+    prisks = query.risks()
     
     prisks.each do |risk|
       Rails.logger.info(risk)
