@@ -160,17 +160,16 @@ module RisksHelper
   def self.datas(content_project)    
     @risks = Risk.where(:id => (content_project.id)).to_a
     allrisks = []
-    (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
-      (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(p)}).each do |i|
-        allrisks[p[0].to_s + ':' + i[0].to_s] = []
+    (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(p)}).each do |i|
+      (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
+        allrisks[i[0].to_s + ':' + p[0].to_s] = []
       end
     end
+    Rails.logger.info(allrisks)
     
     risks.each do |risk|
-      allrisks[risk.impact.to_s  + ':' + risk.probability.to_s].push(risk.id)
+      Rails.logger.info(risk)
     end
-
-    Rails.logger.info(allrisks)
 
     "[
       { x: 'Négligeable', y: 'Peu probable', v: 1 },
