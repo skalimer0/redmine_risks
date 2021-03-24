@@ -144,7 +144,7 @@ module RisksHelper
   def self.probabilities
     probabilities = ['']
     (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
-      probabilities.push(p)
+      probabilities.push(p[0])
     end
     probabilities.push('')
   end
@@ -152,7 +152,7 @@ module RisksHelper
   def self.impacts
     impacts = ['']
     (format_risk_levels(Risk::RISK_IMPACT) {|p| format_risk_impact(p)}).each do |p|
-      impacts.push(p)
+      impacts.push(p[0])
     end
     impacts.push('')
   end
