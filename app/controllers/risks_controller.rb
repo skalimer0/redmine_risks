@@ -247,6 +247,10 @@ class RisksController < ApplicationController
     true
   end
 
+  def redirect_to_risk_query(options)
+    redirect_to risk_path(@risk)
+  end
+
   # Saves @risk from the parameters
   def save_risk
     Risk.transaction do

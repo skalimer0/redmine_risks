@@ -158,7 +158,6 @@ module RisksHelper
   end
 
   def self.datas(content_project)    
-    @risks = Risk.where(:id => (content_project.id.to_i)).to_a
     allrisks = []
     (format_risk_levels(Risk::RISK_IMPACT) {|i| format_risk_impact(p)}).each do |i|
       (format_risk_levels(Risk::RISK_PROBABILITY) {|p| format_risk_probability(p)}).each do |p|
@@ -167,7 +166,13 @@ module RisksHelper
     end
     Rails.logger.info(allrisks)
     
-    risks.each do |risk|
+    query = RiskQuery.new(:name => l(:label_watched_issues), :user => User.current)
+    query.add_filter 'project.id', '=', ["#{Project::STATUS_ACTIVE}"]
+    query.column_names = ['project', 'tracker', 'status', 'subject']
+    query.sort_criteria = [['updated_on', 'desc']]
+    prisks = query.issues()
+    
+    prisks.each do |risk|
       Rails.logger.info(risk)
     end
 
