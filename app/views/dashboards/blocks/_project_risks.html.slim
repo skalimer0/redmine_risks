@@ -74,7 +74,7 @@
 
     config.datasets.push({
       label: #{{"'" + (l :risks_matrix) + "'"}},
-      data: #{raw RisksHelper.datas},
+      data: #{raw RisksHelper.datas @project},
       backgroundColor: function(ctx) {
         if (ctx.dataIndex % 5 == 0 || ctx.dataIndex <= 2 || ctx.dataIndex == 6) {
           return Color('green').rgbString();
