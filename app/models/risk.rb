@@ -225,7 +225,8 @@ class Risk < ActiveRecord::Base
   def magnitude
     return unless probability && impact
 
-    index = (impact * (probability / 100.0) * (RISK_MAGNITUDE.count / 100.0)).round.to_i
+    ratio = (impact / 100.0) * (probability / 100.0)
+    index = (ratio * RISK_MAGNITUDE.count).clamp(0, RISK_MAGNITUDE.count - 1).to_i
     level = RISK_MAGNITUDE[index]
 
     l(("label_risk_level_" + level).to_sym)
